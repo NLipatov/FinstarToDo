@@ -3,6 +3,7 @@ using FinstarToDo.DB;
 using FinstarToDo.DB.Models;
 using FinstarToDo.Services.HashCalculator;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace FinstarToDo.DAL;
 
@@ -10,25 +11,33 @@ public class DataAccessLayer : IDataAccessLayer
 {
     private readonly ToDoContext _toDoContext;
     private readonly IHashCalculatorService _hashCalculatorService;
+    private readonly ILogger<DataAccessLayer> _logger;
 
-    public DataAccessLayer(ToDoContext toDoContext, IHashCalculatorService hashCalculatorService)
+    public DataAccessLayer
+    (ToDoContext toDoContext, 
+    IHashCalculatorService hashCalculatorService,
+    ILogger<DataAccessLayer> logger)
     {
         _toDoContext = toDoContext;
         _hashCalculatorService = hashCalculatorService;
+        _logger = logger;
     }
     public async Task<List<ToDoInfoDTO>> GetTodosList()
     {
+        _logger.LogInformation($"Handling {nameof(GetTodosList)} request.");
         List<ToDo> toDos = await _toDoContext.ToDos
             .AsNoTracking()
             .Include(x => x.Commentaries).ToListAsync();
 
-        return toDos
+        var result = toDos
         .Select(x => new ToDoInfoDTO
         {
             ToDo = x,
             Hash = _hashCalculatorService.CalculateMD5Hash(x.Header)
         })
         .ToList();
+        _logger.LogInformation($"Responding with:\n{JsonSerializer.Serialize(result)}");
+        return result;
     }
     public async Task PostTodo(ToDoPostDTO dto)
     {
