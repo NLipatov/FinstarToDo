@@ -1,6 +1,7 @@
 ﻿using FinstarToDo.Controllers.Extensions;
 using FinstarToDo.DB;
 using FinstarToDo.DB.Models;
+using FinstarToDo.Services.HashCalculator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,14 @@ namespace FinstarToDo.Controllers
     public class ToDoController : ControllerBase
     {
         private readonly ToDoContext _toDoContext;
+        private readonly IHashCalculatorService _hashCalculatorService;
 
-        public ToDoController(ToDoContext toDoContext)
+        public ToDoController
+            (ToDoContext toDoContext,
+            IHashCalculatorService hashCalculatorService)
         {
             _toDoContext = toDoContext;
+            _hashCalculatorService = hashCalculatorService;
         }
 
         [HttpGet("todos")]
