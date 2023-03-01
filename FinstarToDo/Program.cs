@@ -1,10 +1,9 @@
-using FinstarToDo.DAL;
-using FinstarToDo.DB;
-using FinstarToDo.Services.HashCalculator;
 using FinstarToDo.DAL.Extensions;
+using FinstarToDo.DB;
 using FinstarToDo.Services.HashCalculating.Extensions;
-using NLog.Web;
+using Microsoft.AspNetCore.HttpLogging;
 using NLog;
+using NLog.Web;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 try
@@ -23,6 +22,13 @@ try
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
+    builder.Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.RequestHeaders |
+                                HttpLoggingFields.RequestBody |
+                                HttpLoggingFields.ResponseHeaders |
+                                HttpLoggingFields.ResponseBody;
+    });
 
     var app = builder.Build();
 
@@ -39,12 +45,14 @@ try
 
     app.MapControllers();
 
+    app.UseHttpLogging();
+
     app.Run();
 }
-catch(Exception ex)
+catch (Exception ex)
 {
     logger.Error(ex);
-    throw (ex);
+    throw;
 }
 finally
 {
