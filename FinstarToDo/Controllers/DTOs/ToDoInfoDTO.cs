@@ -1,4 +1,5 @@
-﻿using FinstarToDo.DB.Models;
+﻿#nullable disable
+using FinstarToDo.DB.Models;
 
 namespace FinstarToDo.Controllers.DTOs
 {

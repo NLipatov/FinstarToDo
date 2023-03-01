@@ -1,4 +1,5 @@
-﻿using FinstarToDo.DB.Models.Enums;
+﻿#nullable disable
+using FinstarToDo.DB.Models.Enums;
 
 namespace FinstarToDo.Controllers.DTOs
 {

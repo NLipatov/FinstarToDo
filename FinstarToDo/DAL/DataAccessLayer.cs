@@ -19,6 +19,7 @@ public class DataAccessLayer : IDataAccessLayer
     public async Task<List<ToDoInfoDTO>> GetTodosList()
     {
         List<ToDo> toDos = await _toDoContext.ToDos
+            .AsNoTracking()
             .Include(x => x.Commentaries).ToListAsync();
 
         return toDos
@@ -45,13 +46,15 @@ public class DataAccessLayer : IDataAccessLayer
     public async Task<ToDo?> GetTodo(Guid id)
     {
         return await _toDoContext.ToDos
+            .AsNoTracking()
             .Include(x => x.Commentaries).FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task DeleteTodo(Guid id)
     {
-        ToDo toDo = await _toDoContext.ToDos.FirstAsync(x => x.Id == id);
+        ToDo toDo = await _toDoContext.ToDos.Include(x=>x.Commentaries).FirstAsync(x => x.Id == id);
 
+        toDo.Commentaries.ForEach(x => _toDoContext.Remove(x));
         _toDoContext.ToDos.Remove(toDo);
         await _toDoContext.SaveChangesAsync();
     }
@@ -66,14 +69,17 @@ public class DataAccessLayer : IDataAccessLayer
 
     public async Task<List<Commentary>> GetTodoComments(Guid id)
     {
-        ToDo? toDo = await _toDoContext.ToDos.Include(x => x.Commentaries).FirstOrDefaultAsync(x => x.Id == id);
+        ToDo? toDo = await _toDoContext.ToDos
+            .AsNoTracking()
+            .Include(x => x.Commentaries).FirstOrDefaultAsync(x => x.Id == id);
 
         return toDo?.Commentaries ?? new();
     }
 
     public async Task AddToDoComment(Guid id, string commentary)
     {
-        ToDo toDo = await _toDoContext.ToDos.FirstAsync(x => x.Id == id);
+        ToDo toDo = await _toDoContext.ToDos
+            .Include(x=>x.Commentaries).FirstAsync(x => x.Id == id);
 
         toDo.Commentaries.Add(new Commentary
         {
