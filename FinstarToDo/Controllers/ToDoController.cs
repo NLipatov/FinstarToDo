@@ -62,24 +62,17 @@ namespace FinstarToDo.Controllers
         [HttpGet("todo/{id}/comments")]
         public async Task<List<Commentary>> GetTodoComments(Guid id)
         {
-            return await _toDoContext
-                .Comments
-                .Where(x => x.ToDo.Id == id)
-                .ToListAsync();
+            ToDo? toDo = await _toDoContext.GetIfExistAsync<ToDo>(id);
+
+            return toDo.Commentaries;
         }
 
         [HttpPost("todo/{id}/commentary")]
-        public async Task AddToDoComment(Guid id, string commentary)
+        public async Task<List<Commentary>> AddToDoComment(Guid id, string commentary)
         {
             ToDo? toDo = await _toDoContext.GetIfExistAsync<ToDo>(id);
 
-            await _toDoContext.Comments.AddAsync(new Commentary
-            {
-                Comment = commentary,
-                ToDo = toDo
-            });
-
-            await _toDoContext.SaveChangesAsync();
+            return toDo.Commentaries;
         }
     }
 }
