@@ -1,6 +1,8 @@
 using FinstarToDo.DAL;
 using FinstarToDo.DB;
 using FinstarToDo.Services.HashCalculator;
+using FinstarToDo.DAL.Extensions;
+using FinstarToDo.Services.HashCalculating.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ToDoContext>();
-builder.Services.AddTransient<IHashCalculatorService, HashCalculatorService>();
-builder.Services.AddScoped<IDataAccessLayer, DataAccessLayer>();
+builder.Services.UseHashService();
+builder.Services.UseDAL();
 
 var app = builder.Build();
 
