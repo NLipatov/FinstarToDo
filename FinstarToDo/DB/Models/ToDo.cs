@@ -12,6 +12,6 @@ namespace FinstarToDo.DB.Models
         public bool IsDone { get; set; }
         public Category Category { get; set; }
         public Color Color { get; set; }
-        public List<Commentary> Commentaries { get; set; }
+        public List<Commentary> Commentaries { get; set; } = new();
     }
 }
