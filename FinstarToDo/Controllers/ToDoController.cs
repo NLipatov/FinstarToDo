@@ -1,4 +1,5 @@
-﻿using FinstarToDo.Controllers.Extensions;
+﻿using FinstarToDo.Controllers.DTOs;
+using FinstarToDo.Controllers.Extensions;
 using FinstarToDo.DB;
 using FinstarToDo.DB.Models;
 using FinstarToDo.Services.HashCalculator;
@@ -23,9 +24,17 @@ namespace FinstarToDo.Controllers
         }
 
         [HttpGet("todos")]
-        public async Task<List<ToDo>> GetTodosList()
+        public async Task<List<AllToDosDTO>> GetTodosList()
         {
-            return await _toDoContext.ToDos.ToListAsync();
+            List<ToDo> toDos = await _toDoContext.ToDos.ToListAsync();
+
+            return toDos
+                .Select(x => new AllToDosDTO
+                {
+                    ToDo = x,
+                    Hash = _hashCalculatorService.CalculateMD5Hash(x.Header)
+                })
+                .ToList();
         }
 
         [HttpPost("todo")]
