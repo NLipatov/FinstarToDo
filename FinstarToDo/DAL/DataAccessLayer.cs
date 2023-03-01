@@ -1,5 +1,4 @@
 ﻿using FinstarToDo.Controllers.DTOs;
-using FinstarToDo.Controllers.Extensions;
 using FinstarToDo.DB;
 using FinstarToDo.DB.Models;
 using FinstarToDo.Services.HashCalculator;
@@ -19,7 +18,8 @@ public class DataAccessLayer : IDataAccessLayer
     }
     public async Task<List<ToDoInfoDTO>> GetTodosList()
     {
-        List<ToDo> toDos = await _toDoContext.ToDos.ToListAsync();
+        List<ToDo> toDos = await _toDoContext.ToDos
+            .Include(x => x.Commentaries).ToListAsync();
 
         return toDos
         .Select(x => new ToDoInfoDTO
@@ -44,12 +44,13 @@ public class DataAccessLayer : IDataAccessLayer
 
     public async Task<ToDo?> GetTodo(Guid id)
     {
-        return await _toDoContext.ToDos.FirstOrDefaultAsync(x => x.Id == id);
+        return await _toDoContext.ToDos
+            .Include(x => x.Commentaries).FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task DeleteTodo(Guid id)
     {
-        ToDo? toDo = await _toDoContext.GetIfExistAsync<ToDo>(id);
+        ToDo toDo = await _toDoContext.ToDos.FirstAsync(x => x.Id == id);
 
         _toDoContext.ToDos.Remove(toDo);
         await _toDoContext.SaveChangesAsync();
@@ -57,7 +58,7 @@ public class DataAccessLayer : IDataAccessLayer
 
     public async Task UpdateHeader(Guid id, string updatedHeader)
     {
-        ToDo? toDo = await _toDoContext.GetIfExistAsync<ToDo>(id);
+        ToDo toDo = await _toDoContext.ToDos.FirstAsync(x => x.Id == id);
 
         toDo.Header = updatedHeader;
         await _toDoContext.SaveChangesAsync();
@@ -65,19 +66,18 @@ public class DataAccessLayer : IDataAccessLayer
 
     public async Task<List<Commentary>> GetTodoComments(Guid id)
     {
-        ToDo? toDo = await _toDoContext.GetIfExistAsync<ToDo>(id);
+        ToDo? toDo = await _toDoContext.ToDos.Include(x => x.Commentaries).FirstOrDefaultAsync(x => x.Id == id);
 
-        return toDo.Commentaries;
+        return toDo?.Commentaries ?? new();
     }
 
     public async Task AddToDoComment(Guid id, string commentary)
     {
-        ToDo? toDo = await _toDoContext.GetIfExistAsync<ToDo>(id);
+        ToDo toDo = await _toDoContext.ToDos.FirstAsync(x => x.Id == id);
 
-        toDo.Commentaries.Add(new Commentary 
+        toDo.Commentaries.Add(new Commentary
         {
-            Comment = commentary,
-            ToDo = toDo
+            Comment = commentary
         });
 
         await _toDoContext.SaveChangesAsync();

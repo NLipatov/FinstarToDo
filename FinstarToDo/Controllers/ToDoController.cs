@@ -1,11 +1,7 @@
 ﻿using FinstarToDo.Controllers.DTOs;
-using FinstarToDo.Controllers.Extensions;
 using FinstarToDo.DAL;
-using FinstarToDo.DB;
 using FinstarToDo.DB.Models;
-using FinstarToDo.Services.HashCalculator;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FinstarToDo.Controllers
 {
