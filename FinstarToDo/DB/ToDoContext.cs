@@ -1,4 +1,5 @@
-﻿using FinstarToDo.DB.Models;
+﻿using FinstarToDo.DB.DbSettingsConstants;
+using FinstarToDo.DB.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinstarToDo.DB
@@ -15,7 +16,7 @@ namespace FinstarToDo.DB
         public DbSet<Commentary> Comments { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgreSQL"));
+            optionsBuilder.UseNpgsql(_configuration.GetConnectionString(ConnectionString.POSTGRESQL));
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
