@@ -2,6 +2,6 @@
 {
     public interface IHashCalculatorService
     {
-        string CreateAnMD5Hash(string input);
+        string CalculateMD5Hash(string input);
     }
 }
