@@ -12,6 +12,7 @@ namespace FinstarToDo.DB
             _configuration = configuration;
         }
         DbSet<ToDo> ToDos { get; set; }
+        DbSet<Commentary> Comments { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgreSQL"));
