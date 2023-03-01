@@ -4,6 +4,5 @@
     {
         public Guid Id { get; set; }
         public string Comment { get; set; }
-        public ToDo ToDo { get; set; }
     }
 }
