@@ -13,7 +13,7 @@ namespace FinstarToDo.Migrations
 {
     [DbContext(typeof(ToDoContext))]
     [Migration("20230301152807_init")]
-    partial class init
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
