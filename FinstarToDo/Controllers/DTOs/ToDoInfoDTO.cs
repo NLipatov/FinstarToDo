@@ -2,7 +2,7 @@
 
 namespace FinstarToDo.Controllers.DTOs
 {
-    public class AllToDosDTO
+    public class ToDoInfoDTO
     {
         public ToDo ToDo { get; set; }
         public string Hash { get; set; }

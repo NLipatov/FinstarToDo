@@ -24,23 +24,30 @@ namespace FinstarToDo.Controllers
         }
 
         [HttpGet("todos")]
-        public async Task<List<AllToDosDTO>> GetTodosList()
+        public async Task<List<ToDoInfoDTO>> GetTodosList()
         {
             List<ToDo> toDos = await _toDoContext.ToDos.ToListAsync();
 
             return toDos
-                .Select(x => new AllToDosDTO
-                {
-                    ToDo = x,
-                    Hash = _hashCalculatorService.CalculateMD5Hash(x.Header)
-                })
-                .ToList();
+            .Select(x => new ToDoInfoDTO
+            {
+                ToDo = x,
+                Hash = _hashCalculatorService.CalculateMD5Hash(x.Header)
+            })
+            .ToList();
         }
 
         [HttpPost("todo")]
-        public async Task PostTodo(ToDo toDo)
+        public async Task PostTodo(ToDoPostDTO dto)
         {
-            await _toDoContext.ToDos.AddAsync(toDo);
+            await _toDoContext.ToDos
+            .AddAsync(new ToDo
+            {
+                Header = dto.Header,
+                Category = dto.Category,
+                Color = dto.Color,
+            });
+
             await _toDoContext.SaveChangesAsync();
         }
 
