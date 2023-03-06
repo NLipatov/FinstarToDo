@@ -24,7 +24,6 @@ public class DataAccessLayer : IDataAccessLayer
     }
     public async Task<List<ToDoInfoDTO>> GetTodosList()
     {
-        _logger.LogInformation($"Handling {nameof(GetTodosList)} request.");
         List<ToDo> toDos = await _toDoContext.ToDos
             .AsNoTracking()
             .Include(x => x.Commentaries).ToListAsync();
@@ -36,7 +35,6 @@ public class DataAccessLayer : IDataAccessLayer
             Hash = _hashCalculatorService.CalculateMD5Hash(x.Header)
         })
         .ToList();
-        _logger.LogInformation($"Responding with:\n{JsonSerializer.Serialize(result)}");
         return result;
     }
     public async Task PostTodo(ToDoPostDTO dto)
